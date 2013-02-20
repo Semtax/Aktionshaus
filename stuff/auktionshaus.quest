@@ -1,0 +1,68 @@
+quest auktionshaus begin
+	state start begin
+		when 9999.chat."Das Auktionshaus" begin
+			say("Du willst wissen was das Auktionshaus ist?")
+			say("")
+			say("Ganz einfach hier kannst du deine Sachen gegen")
+			say("Yang oder Coins versteigern.")
+			say("Dazu ziehe einfach ein Item deiner Wahl auf mich")
+			say("dann sollte es auf auktion.vices2.net in deinen")
+			say("Account auftauchen und dort kannst du es ganz")
+			say("einfach versteigern!")
+		end
+		when 9999.take with item.vnum > 1 begin
+			local itemdbid = item.get_id()
+			say_title("Auktionshaus")
+			say_item_vnum(item.vnum)
+			say("Willst du dieses Item wirklich in dein")
+			say("Auktionshauslager verschieden?")
+			say("")
+			say_red("Wichtig dieses Item darf das letzte mal")
+			say("vor frühstens 10 Minuten geändert worden")
+			say("sein!")
+			local selection = select("Verschieben", "Abbrechen")
+			if selection == 1 then
+				local count = mysql_query("SELECT COUNT(*) FROM player.item WHERE id='" .. itemdbid .."';")
+				if count[1][1] == "0" then
+					say_title("Fehler")
+					say_red("Das Item wurde erst vor kurze gedroppt oder")
+					say("erhandelt!")
+					say("Deshalb kann es nochnicht versteigert werden.")
+					say("Du musst mindestens 10 Minuten warten!")
+					return
+				end
+				
+				local i2 = mysql_query("SELECT owner_id,count,vnum,socket0,socket1,socket2,socket3,socket4,socket5,attrtype0,attrvalue0,attrtype1,attrvalue1,attrtype2,attrvalue2,attrtype3,attrvalue3,attrtype4,attrvalue4,attrtype5,attrvalue5,attrtype6,attrvalue6 FROM player.item WHERE id='"..itemdbid.."' LIMIT 1;")
+				
+				say_white("1. Bonus: " .. i2[1][11])
+				say("2. Bonus: " .. i2[1][13])
+				say("3. Bonus: " .. i2[1][15])
+				say("4. Bonus: " .. i2[1][17])
+				say("5. Bonus: " .. i2[1][19])
+				say("6. Bonus: " .. i2[1][21])
+				say("7. Bonus: " .. i2[1][23])
+				say_gold("Sind diese Werte richtig?")
+				local selection2 = select("Ja", "Nein")
+				if selection2 == 1 then
+					local values = "'" .. i2[1][1] .. "', '" .. i2[1][2] .. "', '" .. i2[1][3] .. "', '" .. i2[1][4] .. "', '" .. i2[1][5] .. "', '" .. i2[1][6].. "', '" .. i2[1][7] .. "', '" .. i2[1][8] .. "', '" .. i2[1][9] .. "', '" .. i2[1][10]  .. "', '" .. i2[1][11]  .. "', '" .. i2[1][12]  .. "', '" .. i2[1][13]  .. "', '" .. i2[1][14]  .. "', '" .. i2[1][15]  .. "', '" .. i2[1][16]  .. "', '" .. i2[1][17]  .. "', '" .. i2[1][18]  .. "', '" .. i2[1][19] .. "', '" .. i2[1][20] .. "', '" .. i2[1][21] .. "', '" .. i2[1][22]  .. "', '" .. i2[1][23] .. "'"
+					local kopie = mysql_query("INSERT INTO player.akhaus(owner_id, count, vnum, socket0, socket1, socket2, socket3, socket4, socket5, attrtype0, attrvalue0, attrtype1, attrvalue1, attrtype2, attrvalue2, attrtype3, attrvalue3, attrtype4, attrvalue4, attrtype5, attrvalue5, attrtype6, attrvalue6) VALUES(" .. values .. ")")
+				
+					item.remove()
+					say("Das Item wurde verschoben.")
+					say("Viel Spaß noch auf Vices2")
+					
+					return
+				else
+					say("Bitte warten sie bis diese Werte")
+					say("richtig sind!")
+					
+					return
+				end
+			else
+				say("Komme wieder wenn du etwas verkaufen")
+				say("willst.")
+				return
+			end
+		end
+	end
+end
