@@ -1,0 +1,19 @@
+/* 
+    Document   : main
+    Created on : 20.02.2013, 14:10:40
+    Author     : Yissu
+    Description:
+        The main stylesheet for the 'Aktionshaus'
+*/
+
+root { 
+    display: block;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+
+
